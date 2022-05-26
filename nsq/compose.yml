@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  nsqlookupd:
+    image: nsqio/nsq:v1.2.1
+    container_name: nsqlookupd
+    hostname: nsqlookupd
+    command: /nsqlookupd
+    networks:
+      - nsq-network
+    ports:
+      - "4161:4161"
+      - "4160:4160"
+
+  nsqd:
+    image: nsqio/nsq:v1.2.1
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    hostname: nsqd
+    container_name: nsqd
+    networks:
+      - nsq-network
+    ports:
+      - "4151:4151"
+      - "4150:4150"
+
+  nsqadmin:
+    image: nsqio/nsq:v1.2.1
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd
+    hostname: nsqadmin
+    container_name: nsqadmin
+    ports:
+      - "4171:4171"
+    networks:
+      - nsq-network
+
+networks:
+  nsq-network:
+    name: nsq-network
+    driver: overlay
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.31.0.0/24"
