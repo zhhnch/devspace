@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+    
+  redis:
+    environment:
+      - TZ="Asia/Shanghai"
+    image: redis:6.2.6
+    container_name: redis
+    hostname: redis
+    restart: always
+    volumes:
+      - /usr/local/share/redis/data:/data
+    ports:
+      - 6379:6379
+    networks:
+      - dev-server-net
+ 
+networks:
+  dev-server-net:
+    name: dev-server-net
+    driver: overlay
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.30.0.0/24"
+    
+
+  
