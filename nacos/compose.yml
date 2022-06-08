@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+
+  nacos:
+    environment:
+      - MODE=standalone
+    image: nacos/nacos-server:v2.1.0
+    container_name: nacos
+    hostname: nacos
+    restart: always
+    ports:
+      - "8848:8848"
+    tty: true
+    networks:
+      - dev-network
+
+networks:
+  dev-network:
+    external: true
