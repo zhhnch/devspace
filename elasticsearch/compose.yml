@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+    
+  elasticsearch:
+    environment:
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - discovery.type=single-node
+      - http.host=0.0.0.0
+      - cluster.name=es-cluster
+    image: elasticsearch:8.2.3
+    container_name: elasticsearch
+    hostname: elasticsearch
+    restart: unless-stopped
+    volumes:
+      - $PWD/elasticsearch/data:/usr/share/elasticsearch/data
+      - $PWD/elasticsearch/logs:/usr/share/elasticsearch/logs
+      - $PWD/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    tty: true
+    networks:
+      - dev-network
+
+
+  kibana:
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    image: kibana:8.2.3
+    container_name: kibana
+    hostname: kibana
+    restart: unless-stopped
+    volumes:
+      - $PWD/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    tty: true
+    networks:
+      - dev-network
+ 
+networks:
+  dev-network:
+    external: true
+    
+
+  
