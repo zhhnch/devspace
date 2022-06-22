@@ -4,18 +4,30 @@ services:
     
   elasticsearch:
     environment:
-      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - cluster.name=${CLUSTER_NAME}
       - discovery.type=single-node
       - http.host=0.0.0.0
-      - cluster.name=es-cluster
-    image: elasticsearch:8.2.3
+      - http.port=9200
+      - http.cors.enabled=true
+      - http.cors.allow-origin="*"
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=false
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    image: elasticsearch:${STACK_VERSION}
+    privileged: true
     container_name: elasticsearch
     hostname: elasticsearch
     restart: unless-stopped
     volumes:
-      - $PWD/elasticsearch/data:/usr/share/elasticsearch/data
-      - $PWD/elasticsearch/logs:/usr/share/elasticsearch/logs
-      - $PWD/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+      - es-logs:/usr/share/elasticsearch/logs
+      - es-data:/usr/share/elasticsearch/data
+      - es-plugins:/usr/share/elasticsearch/plugins
+    
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -27,7 +39,9 @@ services:
   kibana:
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    image: kibana:8.2.3
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+    image: kibana:${STACK_VERSION}
     container_name: kibana
     hostname: kibana
     restart: unless-stopped
@@ -40,6 +54,18 @@ services:
     tty: true
     networks:
       - dev-network
+  
+
+volumes:
+  es-data:
+    name: es-data
+    external: true
+  es-logs:
+    name: es-logs
+    external: true
+  es-plugins:
+    name: es-logs
+    external: true
  
 networks:
   dev-network:
