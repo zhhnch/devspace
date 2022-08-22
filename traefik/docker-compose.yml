@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  traefik:
+    image: traefik:v2.8
+    restart: unless-stopped
+    container_name: traefik
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - dev-network
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /run/docker.sock:/var/run/docker.sock:ro
+      - $PWD/data/traefik.yml:/traefik.yml:ro
+      - $PWD/data/logs/:/data/logs:rw
+      - $PWD/data/acme.json:/acme.json:rw
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=dev-network"
+
+
+networks:
+  dev-network:
+    external: true

@@ -1,0 +1,34 @@
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    address: :80
+
+  websecure:
+    address: :443
+    http:
+      tls:
+        certResolver: letsencrypt
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: zhhnch@zeemr.com
+      storage: acme.json
+      keyType: EC256
+      httpChallenge:
+        entryPoint: web
+
+log:
+  filePath: /data/logs/traefik.log
+  format: json
+  level: INFO
+
