@@ -21,6 +21,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=dev-network"
+      - "traefik.http.middlewares.user-auth.basicauth.users=zhhnch:$$2y$$05$$/eHSBHUWLuhCKWhZn0ClcOJXH4f6cTvIuhQ/lD9V3yrQFMkY4SqUC"
+      - "traefik.http.routers.traefik.middlewares=user-auth"
+      - "traefik.http.routers.traefik.entrypoints=web,websecure"
+      - "traefik.http.routers.traefik.rule=Host(`prostone.top`)"
+      - "traefik.http.routers.traefik.service=api@internal"
 
 
 networks:
