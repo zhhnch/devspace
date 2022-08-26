@@ -11,6 +11,8 @@ services:
       - '2182:2181'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    volumes:
+      - zookeeper-data:/bitnami/zookeeper/data
     networks:
       - dev-network
 
@@ -34,10 +36,17 @@ services:
       #定义zookeeper连接地址
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - kafka-data:/bitnami/kafka/data
     depends_on:
       - zookeeper
     networks:
       - dev-network
+
+volumes:
+  kafka-data:
+    name: kafka-data
+    external: true
 
 networks:
   dev-network:
