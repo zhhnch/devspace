@@ -21,7 +21,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: zhhnch@zeemr.com
+      email: zhhnch@outlook.com
       storage: acme.json
       keyType: EC256
       httpChallenge:
