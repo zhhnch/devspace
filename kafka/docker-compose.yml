@@ -8,7 +8,7 @@ services:
     hostname: zookeeper
     user: root
     ports:
-      - '2182:2181'
+      - '2181:2181'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     volumes:
@@ -28,9 +28,9 @@ services:
       #定义安全协议
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=EXTERNAL_LISTENER_CLIENTS:PLAINTEXT,INTERNAL_LISTENER_CLIENTS:PLAINTEXT,INTERNAL_LISTENER_BROKER:PLAINTEXT
       #定义kafka服务端socket监听端口
-      - KAFKA_CFG_LISTENERS=EXTERNAL_LISTENER_CLIENTS://kafka:9093,INTERNAL_LISTENER_CLIENTS://kafka:9094,INTERNAL_LISTENER_BROKER://kafka:9095
+      - KAFKA_CFG_LISTENERS=EXTERNAL_LISTENER_CLIENTS://0.0.0.0:9093,INTERNAL_LISTENER_CLIENTS://0.0.0.0:9094,INTERNAL_LISTENER_BROKER://0.0.0.0:9095
       #定义外网访问地址
-      - KAFKA_CFG_ADVERTISED_LISTENERS=EXTERNAL_LISTENER_CLIENTS://kafka:9093,INTERNAL_LISTENER_BROKER://kafka:9095
+      - KAFKA_CFG_ADVERTISED_LISTENERS=EXTERNAL_LISTENER_CLIENTS://192.168.31.9:9093,INTERNAL_LISTENER_BROKER://kafka:9095
       #定义broker通信协议
       - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL_LISTENER_BROKER
       #定义zookeeper连接地址
@@ -46,6 +46,9 @@ services:
 volumes:
   kafka-data:
     name: kafka-data
+    external: true
+  zookeeper-data:
+    name: zookeeper-data
     external: true
 
 networks:

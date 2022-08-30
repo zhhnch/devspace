@@ -14,14 +14,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     networks: 
-      - rabbit-network
+      - dev-network
 
 networks:
-  rabbit-network:
-    name: rabbit-network
-    driver: overlay
-    attachable: true
-    ipam:
-      driver: default
-      config:
-        - subnet: "172.32.0.0/24"
+  dev-network:
+    external: true
