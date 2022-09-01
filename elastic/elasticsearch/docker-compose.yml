@@ -1,0 +1,59 @@
+version: "3.5"
+
+services:
+    
+  elasticsearch:
+    environment:
+      - cluster.name=${CLUSTER_NAME}
+      - discovery.type=single-node
+      - http.host=0.0.0.0
+      - http.port=9200
+      - http.cors.enabled=true
+      - http.cors.allow-origin="*"
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=false
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.http.ssl.certificate=cert/test.zeemr.com.pem
+      - xpack.security.http.ssl.key=cert/test.zeemr.com.key
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.certificate=cert/test.zeemr.com.pem
+      - xpack.security.transport.ssl.key=cert/test.zeemr.com.key
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    image: elasticsearch:${STACK_VERSION}
+    privileged: true
+    container_name: elasticsearch
+    hostname: elasticsearch
+    restart: unless-stopped
+    volumes:
+      - es-logs:/usr/share/elasticsearch/logs
+      - es-config:/usr/share/elasticsearch/config
+      - es-data:/usr/share/elasticsearch/data
+      - es-plugins:/usr/share/elasticsearch/plugins
+    
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    tty: true
+    networks:
+      - proxy
+
+volumes:
+  es-config:
+    external: true
+  es-data:
+    external: true
+  es-logs:
+    external: true
+  es-plugins:
+    external: true
+ 
+networks:
+  proxy:
+    external: true
+    
+
+  

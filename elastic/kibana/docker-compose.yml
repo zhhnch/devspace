@@ -1,0 +1,26 @@
+version: "3.3"
+
+services:
+    
+  kibana:
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+    image: kibana:${STACK_VERSION}
+    container_name: kibana
+    hostname: kibana
+    restart: unless-stopped
+    volumes:
+      - $PWD/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5601:5601"
+    tty: true
+    networks:
+      - proxy
+  
+ 
+networks:
+  proxy:
+    external: true
+  
